@@ -23,13 +23,14 @@ if __name__ == "__main__":
   fs = 48000
   nlayer = 5
   weight_filename = "weight_distance.tsv"
-  
-  helptext = 'usage: {} -p experiment -l nlayer -f file -h'.format(sys.argv[0])
+  save_file = False
+
+  helptext = 'usage: {} -p experiment -l nlayer -f file -s -h'.format(sys.argv[0])
   
   try:
     # Gather the arguments
     all_args = sys.argv[1:]
-    opts, arg = getopt.getopt(all_args, 'p:l:f:h')
+    opts, arg = getopt.getopt(all_args, 'p:l:f:s')
     # Iterate over the options and values
     for opt, arg_val in opts:
       if '-p' in opt:
@@ -38,6 +39,8 @@ if __name__ == "__main__":
         nlayer = int(arg_val)
       elif '-f' in opt:
         weight_filename = arg_val
+      elif '-s' in opt:
+        save_file = True
       elif '-h' in opt:
         raise getopt.GetoptError()
       else:
@@ -60,4 +63,7 @@ if __name__ == "__main__":
   plt.xlabel("t/sec")
   plt.legend()
   
-  plt.show()
+  if save_file:
+    plt.savefig("../results/exp{}/weightDevelopment.png".format(experiment))
+  else:
+    plt.show()
