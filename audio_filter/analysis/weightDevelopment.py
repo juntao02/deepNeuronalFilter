@@ -30,7 +30,7 @@ if __name__ == "__main__":
   try:
     # Gather the arguments
     all_args = sys.argv[1:]
-    opts, arg = getopt.getopt(all_args, 'p:l:f:s')
+    opts, arg = getopt.getopt(all_args, 'p:l:f')
     # Iterate over the options and values
     for opt, arg_val in opts:
       if '-p' in opt:

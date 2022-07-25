@@ -53,8 +53,8 @@ class SNR:
         n = self.loadOrigWAV(filename,startsec,endsec,1)
         return self.calcSpectrum(n)
 
-    def calcSpectrumAfter(self):
-        n = self.loadResultsFile(self.filtered_filename,-endsec)
+    def calcSpectrumAfter(self,startsec=0,endsec=False):
+        n = self.loadResultsFile(self.filtered_filename,startsec,endsec)
         return self.calcSpectrum(n)
 
     def calcSNRbefore(self,filename=signal_noise_filename,startsec_sig=0,startsec_noi=0,duration=5):
@@ -90,10 +90,8 @@ if __name__ == "__main__":
     experiment = 1
     startsec = 1
     fs = 48000
-    startsec_sigBefore = 153
-    startsec_noiBefore = 143
-    startsec_sigAfter = 153
-    startsec_noiAfter = 143
+    startsec_sig = 153
+    startsec_noi = 143
     durationsec = 4
 
     helptext = 'usage: {} -p experiment -f file -h'.format(sys.argv[0])
@@ -118,16 +116,16 @@ if __name__ == "__main__":
 
     plt.figure("Periodogram of the noise: unfilered vs filtered")
     snr = SNR(experiment,fs,filtered_filename)
-    snrbefore = snr.calcSNRbefore(signal_noise_filename,startsec_sigBefore,startsec_noiBefore,durationsec)
+    snrbefore = snr.calcSNRbefore(signal_noise_filename,startsec_sig,startsec_noi,durationsec)
     print("SNR before Noise removal:",snrbefore)
-    snrafter = snr.calcSNRafter(filtered_filename,startsec_sigAfter,startsec_noiAfter,durationsec)
+    snrafter = snr.calcSNRafter(filtered_filename,startsec_sig,startsec_noi,durationsec)
     print("SNR from Noise removal:",snrafter)
-    w1 = snr.calcSpectrumAfter()
+    w1 = snr.calcSpectrumAfter(startsec_noi,startsec_noi+durationsec)
     plt.semilogx(w1[:,0],w1[:,1],label=filtered_filename)
     plt.legend()
     print()
     print()
-    w2 = snr.calcSpectrumBefore()
+    w2 = snr.calcSpectrumBefore(signal_noise_filename,startsec_noi,startsec_noi+durationsec)
     plt.semilogx(w2[:,0],w2[:,1],label="before")
     plt.ylabel("V^2/Hz")
     plt.xlabel("Hz")
