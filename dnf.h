@@ -5,6 +5,7 @@
 #include "dnf/Layer.h"
 #include "dnf/Net.h"
 
+
 /**
  * Main Deep Neuronal Network main class.
  * It's designed to be as simple as possible with
@@ -56,23 +57,34 @@ public:
 		signal_delayLine.push_back(signal);
 		const double delayed_signal = signal_delayLine[0];
 		
+// ***add***
+//		noise_power -= noise_delayLine[noiseDelayLineLength-1] * noise_delayLine[noiseDelayLineLength-1];
+
 		for (int i = noiseDelayLineLength-1 ; i > 0; i--) {
 			noise_delayLine[i] = noise_delayLine[i-1];
 		}
+
+// ***modified***	noise_delayLine[0] = noise / (double)noiseDelayLineLength;
 		noise_delayLine[0] = noise / (double)noiseDelayLineLength;
+// ***add***
+//		noise_power += noise_delayLine[0] * noise_delayLine[0];
 
 		// NOISE INPUT TO NETWORK
 		NNO->setInputs(noise_delayLine);
 		NNO->propInputs();
 		
-		// REMOVER OUTPUT FROM NETWORK
+		// REMOVER: GET OUTPUT FROM NETWORK
 		remover = NNO->getOutput(0);
 		f_nn = delayed_signal - remover;
 		
 		// FEEDBACK TO THE NETWORK 
 		NNO->setError(f_nn);
 		NNO->propErrorBackward();
+
+// ***modified***	
 		NNO->updateWeights();
+		// nlms	NNO->updateWeights(noise_power);
+		
 		return f_nn;
 	}
 
@@ -137,6 +149,9 @@ private:
 	int* nNeurons;
 	double remover = 0;
 	double f_nn = 0;
+
+// ***add***
+	double noise_power = 0;
 };
 
 #endif

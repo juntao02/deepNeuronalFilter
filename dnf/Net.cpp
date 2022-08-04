@@ -137,11 +137,20 @@ double Net::getGradient(Layer::whichGradient _whichGradient) {
 //learning:
 //*************************************************************************************
 
+// ***modified***
 void Net::updateWeights(){
 	for (int i=nLayers-1; i>=0; i--){
 		layers[i]->updateWeights();
 	}
 }
+// nlms
+/* 
+void Net::updateWeights(double noise_power){
+	for (int i=nLayers-1; i>=0; i--){
+		layers[i]->updateWeights(noise_power);
+	}
+}
+*/
 
 //*************************************************************************************
 // getters:

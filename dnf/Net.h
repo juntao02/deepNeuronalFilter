@@ -101,7 +101,9 @@ public:
 /**
  * Requests that all layers perform one iteration of learning
  */
+// ***modified***	
 	void updateWeights();
+	// nlms	void updateWeights(double noise_power);
 
 /**
  * Allows Net to access each layer

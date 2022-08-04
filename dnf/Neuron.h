@@ -59,7 +59,7 @@ public:
 	 * 1 for using the hyperbolic tan function
 	 * 2 for unity function (no activation)
 	 */
-	enum actMethod {Act_Sigmoid = 1, Act_Tanh = 2, Act_ReLU = 3, Act_NONE = 0};
+	enum actMethod {Act_NONE = 0, Act_Sigmoid = 1, Act_Tanh = 2, Act_ReLU = 3, Act_Chebyshev = 4};
 	/**
 	 * Options for choosing an error to monitor the gradient of
 	 * 0 for monitoring the error that propagates backward
@@ -120,7 +120,9 @@ public:
 	/**
 	 * Performs one iteration of learning, that is: it updates all the weights assigned to each input to this neuron
 	 */
+// ***modified***	
 	void updateWeights();
+	// nlms	void updateWeights(double noise_power);
 	
 	/**
 	 * Performs the activation of the sum output of the neuron
@@ -137,6 +139,12 @@ public:
 			if (sum > 0) return sum; else return 0;
 		case Act_NONE:
 			return sum;
+		case Act_Chebyshev:
+			if (sum>-0.9 && sum<0.9)
+				return -sin(12 * acos(sum/7.5))/sin(acos(sum/7.5)); // Un n=11 sum=sum/7.5
+				//return -cos(3 * acos(sum/3)); // Tn n=3 sum=sum/3
+			else
+				return sum>0?1:-1;
 		}
 		return sum;
 	}
@@ -147,15 +155,25 @@ public:
 	 * @return the inverse activation of the input
 	 */
 	inline double doActivationPrime(const double input) const {
+		double temp1 = 0.0;
+		double temp2 = 0.0;
 		switch(actMet){
-		case Act_Sigmoid:
-			return 1 * (0.5 + doActivation(input)) * (0.5 - doActivation(input));
-		case Act_Tanh:
-			return 1 - pow (tanh(input), 2);
-		case Act_ReLU:
-			if (sum > 0) return 1; else return 0;
-		case Act_NONE:
-			return 1;
+			case Act_NONE:
+				return 1;
+			case Act_Sigmoid:
+				return 1 * (0.5 + doActivation(input)) * (0.5 - doActivation(input));
+			case Act_Tanh:
+				return 1 - pow (tanh(input), 2);
+			case Act_ReLU:
+				if (input > 0) return 1; else return 0;
+			case Act_Chebyshev:
+				if (sum > -0.9 && sum < 0.9){
+					temp1 = 12 * acos(input / 7.5);
+					temp2 = 225 - 4 * input * input;
+					return 360*cos(temp1)/temp2 - 60*input*sin(temp1)/pow(temp2,1.5);
+				}
+				else 
+					return 0;
 		}
 		return 1;
 	}

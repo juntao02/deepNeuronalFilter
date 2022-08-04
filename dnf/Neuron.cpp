@@ -79,7 +79,7 @@ void Neuron::initNeuron(int _neuronIndex, int _layerIndex, weightInitMethod _wim
 }
 
 void Neuron::setLearningRate(double _w_learningRate, double _b_learningRate){
-	w_learningRate=_w_learningRate;
+	w_learningRate = _w_learningRate;
 	b_learningRate = _b_learningRate;
 }
 
@@ -138,6 +138,7 @@ double Neuron::getError(){
 }
 
 
+// ***modified***
 void Neuron::updateWeights(){
 	weightSum = 0;
 	maxWeight = 0;
@@ -150,6 +151,21 @@ void Neuron::updateWeights(){
 	}
 	bias += b_learningRate * error;
 }
+// nlms
+/* 
+void Neuron::updateWeights(double noise_power){
+	weightSum = 0;
+	maxWeight = 0;
+	minWeight = 0;
+	for (int i=0; i<nInputs; i++){
+		weights[i] += w_learningRate * inputs[i] * error / noise_power;
+		weightSum += fabs(weights[i]);
+		maxWeight = max (maxWeight,weights[i]);
+		minWeight = min (maxWeight,weights[i]);
+	}
+	bias += b_learningRate * error;
+}
+*/
 
 //*************************************************************************************
 // getters:

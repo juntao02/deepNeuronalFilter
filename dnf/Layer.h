@@ -94,7 +94,10 @@ public:
 	/**
 	 * Requests that all neurons perform one iteration of learning
 	 */
+
+// ***modified***		
 	void updateWeights();
+	// nlms	void updateWeights(double noise_power);
 
 	/**
 	 * Allows access to a specific neuron

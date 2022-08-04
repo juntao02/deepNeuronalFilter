@@ -148,11 +148,20 @@ double Layer::getGradient(whichGradient _whichGradient) {
 //learning:
 //*************************************************************************************
 
+// ***modified***
 void Layer::updateWeights(){
     for (int i=0; i<nNeurons; i++){
         neurons[i]->updateWeights();
     }
 }
+// nlms
+/* 
+void Layer::updateWeights(double noise_power){
+    for (int i=0; i<nNeurons; i++){
+        neurons[i]->updateWeights(noise_power);
+    }
+}
+*/
 
 //*************************************************************************************
 //getters:

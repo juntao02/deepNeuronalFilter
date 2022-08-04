@@ -93,17 +93,20 @@ if __name__ == "__main__":
     startsec_sig = 153
     startsec_noi = 143
     durationsec = 4
+    plot_fig = 0
 
-    helptext = 'usage: {} -p experiment -f file -h'.format(sys.argv[0])
+    helptext = 'usage: {} -p experiment -f file -s spectrum -h'.format(sys.argv[0])
 
     try:
         # Gather the arguments
         all_args = sys.argv[1:]
-        opts, arg = getopt.getopt(all_args, 'p:f')
+        opts, arg = getopt.getopt(all_args, 'p:s:f')
         # Iterate over the options and values
         for opt, arg_val in opts:
             if '-p' in opt:
                 experiment = int(arg_val)
+            elif '-s' in opt:
+                plot_fig = int(arg_val)
             elif '-f' in opt:
                 filtered_filename = arg_val
             elif '-h' in opt:
@@ -120,15 +123,18 @@ if __name__ == "__main__":
     print("SNR before Noise removal:",snrbefore)
     snrafter = snr.calcSNRafter(filtered_filename,startsec_sig,startsec_noi,durationsec)
     print("SNR from Noise removal:",snrafter)
-    w1 = snr.calcSpectrumAfter(startsec_noi,startsec_noi+durationsec)
-    plt.semilogx(w1[:,0],w1[:,1],label=filtered_filename)
-    plt.legend()
-    print()
-    print()
-    w2 = snr.calcSpectrumBefore(signal_noise_filename,startsec_noi,startsec_noi+durationsec)
-    plt.semilogx(w2[:,0],w2[:,1],label="before")
-    plt.ylabel("V^2/Hz")
-    plt.xlabel("Hz")
-    plt.legend()
+    
+    if plot_fig != 2:
+    	w1 = snr.calcSpectrumAfter(startsec_noi,startsec_noi+durationsec)
+    	plt.semilogx(w1[:,0],w1[:,1],label=filtered_filename)
+    	plt.legend()
+    	print()
+    	print()
+    if plot_fig != 1:
+    	w2 = snr.calcSpectrumBefore(signal_noise_filename,startsec_noi,startsec_noi+durationsec)
+    	plt.semilogx(w2[:,0],w2[:,1],label="before")
+    	plt.ylabel("V^2/Hz")
+    	plt.xlabel("Hz")
+    	plt.legend()
 
     plt.show()
